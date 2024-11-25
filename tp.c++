@@ -5,10 +5,6 @@ using namespace std;
 
 class Pessoa
 {
-private:
-    int codigo;
-    string nome;
-    int telefone;
 
 public:
     Pessoa(int codigo, string nome, int telefone)
@@ -17,17 +13,24 @@ public:
         this->nome = nome;
         this->telefone = telefone;
     }
+    // metodos get
     int getCodigo() const { return codigo; }
     string getNome() const { return nome; }
     int getTelefone() const { return telefone; }
+
+    // metodos set
+    void setCodigo(int codigo) { this->codigo = codigo; }
+    void setNome(string nome) { this->nome = nome; }
+    void setTelefone(int telefone) { this->telefone = telefone; }
+
+private:
+    int codigo;
+    string nome;
+    int telefone;
 };
 
 class Passageiro : public Pessoa
 {
-private:
-    string endereco;
-    int fidelidade;
-    int pontos_fidelidade;
 
 public:
     Passageiro(int codigo, string nome, int telefone, string endereco, int fidelidade, int pontos_fidelidade) : Pessoa(codigo, nome, telefone)
@@ -36,30 +39,39 @@ public:
         this->fidelidade = fidelidade;
         this->pontos_fidelidade = pontos_fidelidade;
     }
+    // metodo get
     string getEndereco() const { return endereco; }
-    int getFidelidade() const {return fidelidade;}
-    int pontosFidelidade() const {return pontos_fidelidade;}
+    int getFidelidade() const { return fidelidade; }
+    int pontosFidelidade() const { return pontos_fidelidade; }
+
+    // metodo set
+    void setEndereco(string endereco) { this->endereco = endereco; }
+    void setFidelidade(int fidelidade) { this->fidelidade = fidelidade; }
+    void setPontosFidelidade(int pontos_fidelidade) { this->pontos_fidelidade = pontos_fidelidade; }
+
+private:
+    string endereco;
+    int fidelidade;
+    int pontos_fidelidade;
 
     void cadastrar_passageiro();
 };
 
 class Tripulante : Pessoa
 {
-private:
-    string cargo;
 
 public:
     Tripulante(string cargo, int codigo, string nome, int telefone) : Pessoa(codigo, nome, telefone)
     {
         this->cargo = cargo;
     }
+
+private:
+    string cargo;
 };
 
 class Assento
 {
-private:
-    int numero_assento;
-    string status; // ocupado ou livre
 
 public:
     Assento(int numero_assento, string status)
@@ -67,21 +79,14 @@ public:
         this->numero_assento = numero_assento;
         this->status = status;
     }
+
+private:
+    int numero_assento;
+    string status; // ocupado ou livre
 };
 
 class Voo
 {
-private:
-    int codigo_voo;
-    int data;
-    int hora;
-    string origem;
-    string destino;
-    int codigo_aviao;
-    string status; // ativo ou inativo
-    double tarifa;
-    vector<Tripulante *> tripulacao;
-    vector<Assento> assentos;
 
 public:
     Voo(int codigo_voo, int data, int hora, string origem, string destino, int codigo_aviao, string status, double tarifa, vector<Tripulante *> tripulacao, vector<Assento> assentos)
@@ -95,14 +100,22 @@ public:
         this->status = status;
         this->tarifa = tarifa;
     }
+
+private:
+    int codigo_voo;
+    int data;
+    int hora;
+    string origem;
+    string destino;
+    int codigo_aviao;
+    string status; // ativo ou inativo
+    double tarifa;
+    vector<Tripulante *> tripulacao;
+    vector<Assento> assentos;
 };
 
 class Reserva
 {
-private:
-    Voo *voo;
-    Assento *assento;
-    Passageiro *passageiro;
 
 public:
     Reserva(Voo *voo, Assento *Assento, Passageiro *passageiro)
@@ -111,6 +124,11 @@ public:
         this->assento = assento;
         this->passageiro = passageiro;
     }
+
+private:
+    Voo *voo;
+    Assento *assento;
+    Passageiro *passageiro;
 };
 
 void Passageiro ::cadastrar_passageiro()
@@ -120,7 +138,7 @@ void Passageiro ::cadastrar_passageiro()
     cout << "Telefone passageiro: " << getTelefone() << "\n";
     cout << "Endereco passageiro: " << getEndereco() << "\n";
     cout << "Fidelidade passageiro: " << getFidelidade() << "\n";
-    // cout << "Pontos fidelidade: " << getpo
+    // cout << "Pontos fidelidade: " << getPontosFidelidade
 }
 int main()
 {
