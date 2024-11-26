@@ -2,7 +2,6 @@
 #include <string>
 #include <vector>
 using namespace std;
-
 class Pessoa
 {
 public:
@@ -13,23 +12,19 @@ public:
         this->nome = nome;
         this->telefone = telefone;
     }
-
     // Métodos get
     int getCodigo() const { return codigo; }
     string getNome() const { return nome; }
     int getTelefone() const { return telefone; }
-
     // Métodos set
     void setCodigo(int codigo) { this->codigo = codigo; }
     void setNome(string nome) { this->nome = nome; }
     void setTelefone(int telefone) { this->telefone = telefone; }
-
 private:
     int codigo;
     string nome;
     int telefone;
 };
-
 class Passageiro : public Pessoa
 {
 public:
@@ -41,17 +36,14 @@ public:
         this->fidelidade = fidelidade;
         this->pontos_fidelidade = pontos_fidelidade;
     }
-
     // Métodos get
     string getEndereco() const { return endereco; }
     string getFidelidade() const { return fidelidade; }
     int getPontosFidelidade() const { return pontos_fidelidade; }
-
     // Métodos set
     void setEndereco(string endereco) { this->endereco = endereco; }
     void setFidelidade(string fidelidade) { this->fidelidade = fidelidade; }
     void setPontosFidelidade(int pontos_fidelidade) { this->pontos_fidelidade = pontos_fidelidade; }
-
     // Método para exibir os dados do passageiro
     void exibirDados()
     {
@@ -62,147 +54,143 @@ public:
         cout << "Tem fidelidade? " << fidelidade << "\n";
         cout << "Pontos fidelidade: " << pontos_fidelidade << "\n";
     }
-
 private:
     string endereco;
     string fidelidade;
     int pontos_fidelidade = 0;
 };
-
 class Tripulante : public Pessoa
 {
 public:
     // Construtor da classe Tripulante
-    Tripulante(string cargo, int codigo, string nome, int telefone) : Pessoa(codigo, nome, telefone)
+    Tripulante(int codigo, string nome, int telefone, string cargo)
+        : Pessoa(codigo, nome, telefone), cargo(cargo) {}
+    // Métodos get
+    string getCargo() const { return cargo; }
+    // Métodos set
+    void setCargo(string cargo) { this->cargo = cargo; }
+    // Método para exibir os dados do tripulante
+    void exibirDados()
     {
-        this->cargo = cargo;
+        cout << "#### Código tripulante: " << getCodigo() << "\n";
+        cout << "Nome: " << getNome() << "\n";
+        cout << "Telefone: " << getTelefone() << "\n";
+        cout << "Cargo: " << cargo << "\n";
     }
-
 private:
     string cargo;
 };
-
-class Assento
+// Função para verificar se um código já existe
+bool codigoExiste(const vector<Pessoa *> &pessoas, int codigo)
 {
-public:
-    // Construtor da classe Assento
-    Assento(int numero_assento, string status)
+    for (const auto &p : pessoas)
     {
-        this->numero_assento = numero_assento;
-        this->status = status;
+        if (p->getCodigo() == codigo)
+            return true;
     }
-
-private:
-    int numero_assento;
-    string status; // ocupado ou livre
-};
-
-class Voo
-{
-public:
-    // Construtor da classe Voo
-    Voo(int codigo_voo, int data, int hora, string origem, string destino, int codigo_aviao, string status, double tarifa, vector<Tripulante *> tripulacao, vector<Assento> assentos)
-    {
-        this->codigo_voo = codigo_voo;
-        this->data = data;
-        this->hora = hora;
-        this->origem = origem;
-        this->destino = destino;
-        this->codigo_aviao = codigo_aviao;
-        this->status = status;
-        this->tarifa = tarifa;
-        this->tripulacao = tripulacao;
-        this->assentos = assentos;
-    }
-
-private:
-    int codigo_voo;
-    int data;
-    int hora;
-    string origem;
-    string destino;
-    int codigo_aviao;
-    string status; // ativo ou inativo
-    double tarifa;
-    vector<Tripulante *> tripulacao;
-    vector<Assento> assentos;
-};
-
-class Reserva
-{
-public:
-    // Construtor da classe Reserva
-    Reserva(Voo *voo, Assento *assento, Passageiro *passageiro)
-    {
-        this->voo = voo;
-        this->assento = assento;
-        this->passageiro = passageiro;
-    }
-
-private:
-    Voo *voo;
-    Assento *assento;
-    Passageiro *passageiro;
-};
-
-// Função para ver os passageiros
-void ver_Passageiro(const vector<Passageiro *> &passageiros)
-{
-    for (const auto &pessoa : passageiros)
-    {
-        pessoa->exibirDados();
-    }
+    return false;
 }
-
 // Função para cadastrar um passageiro
 void cadastrar_passageiro(vector<Passageiro *> &passageiros)
 {
-    int codigo;
+    int codigo, telefone;
     string nome, endereco, fidelidade;
-    int telefone;
-
     cout << "Digite o código do passageiro: " << "\n";
     cin >> codigo;
-    for (const auto &pessoa : passageiros)
+    // Verificar se o código já existe
+    if (codigoExiste(reinterpret_cast<const vector<Pessoa *> &>(passageiros), codigo))
     {
-        if (pessoa->getCodigo() == codigo)
-        {
-            cout << "Código já existe!" << "\n";
-            return;
-        }
+        cout << "Código já existe!\n";
+        return;
     }
-
     cout << "Digite o nome do passageiro: " << "\n";
-    cin >> nome;
-
+    cin.ignore();
+    getline(cin, nome);
     cout << "Digite o endereço do passageiro: " << "\n";
-    cin >> endereco;
-
+    getline(cin, endereco);
     cout << "Digite o telefone do passageiro: " << "\n";
     cin >> telefone;
-
-    cout << "Tem fidelidade: (Sim ou Não)" << "\n";
-    cin >> fidelidade;
-
+    cout << "Tem fidelidade? (Sim ou Não): " << "\n";
+    cin.ignore();
+    getline(cin, fidelidade);
+    // Criar um novo passageiro e adicioná-lo ao vetor
     Passageiro *passageiro = new Passageiro(codigo, nome, telefone, endereco, fidelidade, 0);
     passageiros.push_back(passageiro);
+    cout << "Passageiro cadastrado com sucesso!\n";
 }
-
-void menu(){
+// Função para ver os passageiros
+void ver_passageiros(const vector<Passageiro *> &passageiros)
+{
+    if (passageiros.empty())
+    {
+        cout << "Nenhum passageiro cadastrado.\n";
+        return;
+    }
+    // Exibir os dados de todos os passageiros
+    for (const auto &p : passageiros)
+    {
+        p->exibirDados();
+        cout << "--------------------------------\n";
+    }
+}
+// Função para cadastrar um tripulante
+void cadastrar_tripulante(vector<Tripulante *> &tripulantes)
+{
+    int codigo, telefone;
+    string nome, cargo;
+    cout << "Digite o código do tripulante: " << "\n";
+    cin >> codigo;
+    // Verificar se o código já existe
+    if (codigoExiste(reinterpret_cast<const vector<Pessoa *> &>(tripulantes), codigo))
+    {
+        cout << "Código já existe!\n";
+        return;
+    }
+    cout << "Digite o nome do tripulante: " << "\n";
+    cin.ignore();
+    getline(cin, nome);
+    cout << "Digite o telefone do tripulante: " << "\n";
+    cin >> telefone;
+    cout << "Digite o cargo do tripulante: " << "\n";
+    cin.ignore();
+    getline(cin, cargo);
+    // Criar um novo tripulante e adicioná-lo ao vetor
+    Tripulante *tripulante = new Tripulante(codigo, nome, telefone, cargo);
+    tripulantes.push_back(tripulante);
+    cout << "Tripulante cadastrado com sucesso!\n";
+}
+// Função para ver os tripulantes
+void ver_tripulantes(const vector<Tripulante *> &tripulantes)
+{
+    if (tripulantes.empty())
+    {
+        cout << "Nenhum tripulante cadastrado.\n";
+        return;
+    }
+    // Exibir os dados de todos os tripulantes
+    for (const auto &t : tripulantes)
+    {
+        t->exibirDados();
+        cout << "--------------------------------\n";
+    }
+}
+// Menu principal
+void menu()
+{
     cout << "****** Bem vindo a Companhia Aérea Voo Seguro ****** " << "\n";
     cout << "-------------------------------------------" << "\n";
-    cout << "Escolha uma opcao: " << "\n";
+    cout << "Escolha uma opção: " << "\n";
     cout << "1. Cadastrar passageiro" << "\n";
     cout << "2. Ver passageiros" << "\n";
+    cout << "3. Cadastrar tripulante" << "\n";
+    cout << "4. Ver tripulantes" << "\n";
     cout << "0. Sair" << "\n";
 }
 int main()
-{
-    vector<Tripulante *> tripulantes;
+{   
+    setlocale(LC_ALL, "pt_BR.UTF-8");
     vector<Passageiro *> passageiros;
-    vector<Voo *> voos;
-
-    
+    vector<Tripulante *> tripulantes;
     int opcao;
     do
     {
@@ -210,28 +198,29 @@ int main()
         cin >> opcao;
         switch (opcao)
         {
-        case 0: 
-            cout << "Saindo...";
+        case 0:
+            cout << "Saindo...\n";
             break;
         case 1:
             cadastrar_passageiro(passageiros);
             break;
-        case 2: 
-            ver_Passageiro(passageiros);
+        case 2:
+            ver_passageiros(passageiros);
+            break;
+        case 3:
+            cadastrar_tripulante(tripulantes);
+            break;
+        case 4:
+            ver_tripulantes(tripulantes);
             break;
         default:
-            cout << "Opcao invalida!";
-            break;
+            cout << "Opção inválida!\n";
         }
     } while (opcao != 0);
-    
-    
-
     // Liberar memória alocada
     for (auto &p : passageiros)
-    {
         delete p;
-    }
-
+    for (auto &t : tripulantes)
+        delete t;
     return 0;
 }
