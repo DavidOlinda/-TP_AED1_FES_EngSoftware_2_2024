@@ -23,7 +23,7 @@ public:
     void setNome(string nome) { this->nome = nome; }
     void setTelefone(int telefone) { this->telefone = telefone; }
 
-private:
+public:
     int codigo;
     string nome;
     int telefone;
@@ -31,30 +31,37 @@ private:
 
 class Passageiro : public Pessoa
 {
-
 public:
-    Passageiro(int codigo, string nome, int telefone, string endereco, int fidelidade, int pontos_fidelidade) : Pessoa(codigo, nome, telefone)
+    Passageiro(int codigo, string nome, int telefone, string endereco, int fidelidade, int pontos_fidelidade) 
+    : Pessoa(codigo, nome, telefone)
     {
         this->endereco = endereco;
         this->fidelidade = fidelidade;
         this->pontos_fidelidade = pontos_fidelidade;
     }
-    // metodo get
+    // métodos get
     string getEndereco() const { return endereco; }
     int getFidelidade() const { return fidelidade; }
-    int pontosFidelidade() const { return pontos_fidelidade; }
+    int getPontosFidelidade() const { return pontos_fidelidade; }
 
-    // metodo set
+    // métodos set
     void setEndereco(string endereco) { this->endereco = endereco; }
     void setFidelidade(int fidelidade) { this->fidelidade = fidelidade; }
     void setPontosFidelidade(int pontos_fidelidade) { this->pontos_fidelidade = pontos_fidelidade; }
+
+    void cadastrar_passageiro()
+    {
+       cout << "Digite o codigo do passageiro: " << "\n";
+       cin >> codigo;
+    }
+    void exibirDados(){
+        cout << "codigo: " << codigo << "\n";
+    }
 
 private:
     string endereco;
     int fidelidade;
     int pontos_fidelidade;
-
-    void cadastrar_passageiro();
 };
 
 class Tripulante : Pessoa
@@ -131,17 +138,10 @@ private:
     Passageiro *passageiro;
 };
 
-void Passageiro ::cadastrar_passageiro()
-{
-    cout << "Nome passageiro: " << getNome() << "\n";
-    cout << "Codigo passageiro: " << getCodigo() << "\n";
-    cout << "Telefone passageiro: " << getTelefone() << "\n";
-    cout << "Endereco passageiro: " << getEndereco() << "\n";
-    cout << "Fidelidade passageiro: " << getFidelidade() << "\n";
-    // cout << "Pontos fidelidade: " << getPontosFidelidade
-}
+
 int main()
-{
+{   
+    cadastrar_passageiro();
     vector<Tripulante> tripulantes;
     vector<Passageiro> passageiros;
     vector<Voo> voo;
