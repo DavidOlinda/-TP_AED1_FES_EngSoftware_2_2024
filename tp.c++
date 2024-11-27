@@ -20,6 +20,7 @@ public:
     void setCodigo(int codigo) { this->codigo = codigo; }
     void setNome(string nome) { this->nome = nome; }
     void setTelefone(int telefone) { this->telefone = telefone; }
+
 private:
     int codigo;
     string nome;
@@ -47,13 +48,14 @@ public:
     // Método para exibir os dados do passageiro
     void exibirDados()
     {
-        cout << "#### Código passageiro: " << getCodigo() << "\n";
+        cout << "#### Codigo passageiro: " << getCodigo() << "\n";
         cout << "Nome passageiro: " << getNome() << "\n";
         cout << "Endereço do passageiro: " << endereco << "\n";
         cout << "Telefone passageiro: " << getTelefone() << "\n";
         cout << "Tem fidelidade? " << fidelidade << "\n";
         cout << "Pontos fidelidade: " << pontos_fidelidade << "\n";
     }
+
 private:
     string endereco;
     string fidelidade;
@@ -77,32 +79,106 @@ public:
         cout << "Telefone: " << getTelefone() << "\n";
         cout << "Cargo: " << cargo << "\n";
     }
+
 private:
     string cargo;
 };
-// Função para verificar se um código já existe
-bool codigoExiste(const vector<Pessoa *> &pessoas, int codigo)
+class Assento
 {
-    for (const auto &p : pessoas)
+private:
+    int numero_assento;
+    string status; // ocupado ou livre
+public:
+    Assento(int numero_assento, string status)
     {
-        if (p->getCodigo() == codigo)
-            return true;
+        this->numero_assento = numero_assento;
+        this->status = status;
     }
-    return false;
-}
+};
+class Voo
+{
+private:
+    int codigo_voo;
+    string data;
+    int hora;
+    string origem;
+    string destino;
+    string status; // ativo ou inativo
+    double tarifa;
+    vector<Tripulante *> tripulacao;
+    vector<Assento> assentos;
+
+public:
+    Voo(int codigo_voo, string data, int hora, string origem, string destino, string status, double tarifa, vector<Tripulante *> tripulacao, vector<Assento> assentos)
+    {
+        this->codigo_voo = codigo_voo;
+        this->data = data;
+        this->hora = hora;
+        this->origem = origem;
+        this->destino = destino;
+        this->status = status;
+        this->tarifa = tarifa;
+        this->tripulacao = tripulacao;
+        this->assentos = assentos;
+    }
+
+    int getCodigo_voo() const { return codigo_voo; }
+
+    // Método para acessar os tripulantes e modificar o vetor diretamente
+    vector<Tripulante *> &getTripulantes() { return tripulacao; }
+
+    // Método para exibir dados do voo
+    void exibirDados() const
+    {
+        cout << " ****** Codigo do Voo: " << codigo_voo << "\n";
+        cout << "Data: " << data << "\n";
+        cout << "Hora: " << hora << "\n";
+        cout << "Origem: " << origem << "\n";
+        cout << "Destino: " << destino << "\n";
+        cout << "Status: " << status << "\n";
+        cout << "Tarifa: " << tarifa << "\n";
+        cout << "Tripulantes nesse voo: " << "\n";
+        for (auto tripulante : tripulacao)
+        {
+            cout << tripulante->getCargo() << " com codigo " << tripulante->getCodigo() << " e nome: " << tripulante->getNome() << "\n";
+        }
+    }
+
+    void ativarAviao()
+    {
+        this->status = "Ativado";
+    }
+
+    // Método para adicionar um tripulante ao voo
+    void adicionarTripulante(Tripulante *tripulante)
+    {
+        tripulacao.push_back(tripulante);
+    }
+};
+
+class Reserva
+{
+    Voo *voo;
+    Assento *assento;
+    Passageiro *passageiro;
+};
 // Função para cadastrar um passageiro
 void cadastrar_passageiro(vector<Passageiro *> &passageiros)
 {
     int codigo, telefone;
     string nome, endereco, fidelidade;
-    cout << "Digite o código do passageiro: " << "\n";
+    cout << "Digite o codigo do passageiro: " << "\n";
     cin >> codigo;
     // Verificar se o código já existe
-    if (codigoExiste(reinterpret_cast<const vector<Pessoa *> &>(passageiros), codigo))
+    for (auto pessoa : passageiros)
     {
-        cout << "Código já existe!\n";
-        return;
+        if (pessoa->getCodigo() == codigo)
+        {
+            cout << "Pessoa com o codigo existente!\n";
+            return;
+        }
     }
+
     cout << "Digite o nome do passageiro: " << "\n";
     cin.ignore();
     getline(cin, nome);
@@ -113,7 +189,7 @@ void cadastrar_passageiro(vector<Passageiro *> &passageiros)
     cout << "Tem fidelidade? (Sim ou Não): " << "\n";
     cin.ignore();
     getline(cin, fidelidade);
-    // Criar um novo passageiro e adicioná-lo ao vetor
+    // Criar um novo passageiro e adicionar ao vetor
     Passageiro *passageiro = new Passageiro(codigo, nome, telefone, endereco, fidelidade, 0);
     passageiros.push_back(passageiro);
     cout << "Passageiro cadastrado com sucesso!\n";
@@ -138,14 +214,18 @@ void cadastrar_tripulante(vector<Tripulante *> &tripulantes)
 {
     int codigo, telefone;
     string nome, cargo;
-    cout << "Digite o código do tripulante: " << "\n";
+    cout << "Digite o codigo do tripulante: " << "\n";
     cin >> codigo;
     // Verificar se o código já existe
-    if (codigoExiste(reinterpret_cast<const vector<Pessoa *> &>(tripulantes), codigo))
+    for (auto pessoa : tripulantes)
     {
-        cout << "Código já existe!\n";
-        return;
+        if (pessoa->getCodigo() == codigo)
+        {
+            cout << "Pessoa com o codigo existente!\n";
+            return;
+        }
     }
+
     cout << "Digite o nome do tripulante: " << "\n";
     cin.ignore();
     getline(cin, nome);
@@ -174,23 +254,148 @@ void ver_tripulantes(const vector<Tripulante *> &tripulantes)
         cout << "--------------------------------\n";
     }
 }
+void cadastrar_Voo(vector<Voo *> &voos)
+{
+    int hora, num_assentos, codigo_voo;
+    double tarifa;
+    string origem, destino, data;
+
+    cout << "Digite o codigo do voo: " << "\n";
+    cin >> codigo_voo;
+    for (const auto &p : voos)
+    {
+        if (p->getCodigo_voo() == codigo_voo)
+        {
+            cout << "Voo ja cadastrado!" << "\n";
+            return;
+        }
+    }
+    cout << "Digite a data desejada: " << "\n";
+    cin >> data;
+    cout << "Digite a hora desejada: " << "\n";
+    cin >> hora;
+    cin.ignore();
+
+    cout << "Digite a origem: " << "\n";
+    getline(cin, origem);
+
+    cout << "Digite o destino: " << "\n";
+    getline(cin, destino);
+
+    cout << "Digite a tarifa: " << "\n";
+    cin >> tarifa;
+    cin.ignore();
+
+    vector<Tripulante *> tripulacao;
+
+    cout << "Numero de assentos no avião: " << "\n";
+    cin >> num_assentos;
+    vector<Assento> assentos;
+    for (int i = 0; i < num_assentos; i++)
+    {
+        Assento assento(i + 1, "desocupado");
+        assentos.push_back(assento);
+    }
+
+    Voo *voo = new Voo(codigo_voo, data, hora, origem, destino, "inativo", tarifa, tripulacao, assentos);
+    voos.push_back(voo);
+
+    cout << "Voo cadastrado com sucesso!\n";
+}
+
+void ver_Voos(const vector<Voo *> &voo)
+{
+    if (voo.empty())
+    {
+        cout << "Nenhum voo cadastrado.\n";
+        return;
+    }
+
+    for (const auto &p : voo)
+    {
+        p->exibirDados();
+        cout << "--------------------------------\n";
+    }
+}
+void agregar_tripulante(vector<Tripulante *> &tripulantes, vector<Voo *> &voos)
+{
+    int codigo_voo, codigo_tripulante;
+    Voo *voo_selecionado = nullptr;
+    cout << "Qual o codigo do voo para adicionar o tripulante: " << "\n";
+    cin >> codigo_voo;
+
+    for (auto voo : voos)
+    {
+        if (voo->getCodigo_voo() == codigo_voo)
+        {
+            voo_selecionado = voo;
+            break;
+        }
+    }
+
+    if (voo_selecionado == nullptr)
+    {
+        cout << "Esse voo nao existe!" << "\n";
+        return;
+    }
+
+    cout << "Qual o codigo do tripulante para adicionar ao voo: " << "\n";
+    cin >> codigo_tripulante;
+
+    Tripulante *tripulante_atual = nullptr;
+    for (auto tripulante : tripulantes)
+    {
+        if (tripulante->getCodigo() == codigo_tripulante)
+        {
+            tripulante_atual = tripulante;
+            break;
+        }
+    }
+
+    if (tripulante_atual == nullptr)
+    {
+        cout << "Esse tripulante nao existe!" << "\n";
+        return;
+    }
+
+    for (auto tripulante : voo_selecionado->getTripulantes())
+    {
+        if (tripulante->getCargo() == tripulante_atual->getCargo())
+        {
+            cout << "Esse tripulante nao pode ser adicionado! Ja existe um membro com esse cargo." << "\n";
+            return;
+        }
+    }
+
+    voo_selecionado->adicionarTripulante(tripulante_atual);
+
+    if (voo_selecionado->getTripulantes().size() == 3)
+    {
+        voo_selecionado->ativarAviao();
+    }
+}
+
 // Menu principal
 void menu()
 {
-    cout << "****** Bem vindo a Companhia Aérea Voo Seguro ****** " << "\n";
+    cout << "****** Bem vindo a Companhia Aerea Voo Seguro ****** " << "\n";
     cout << "-------------------------------------------" << "\n";
-    cout << "Escolha uma opção: " << "\n";
+    cout << "Escolha uma opcao: " << "\n";
     cout << "1. Cadastrar passageiro" << "\n";
     cout << "2. Ver passageiros" << "\n";
     cout << "3. Cadastrar tripulante" << "\n";
     cout << "4. Ver tripulantes" << "\n";
+    cout << "5. Cadastrar voo" << "\n";
+    cout << "6. Ver voos" << "\n";
+    cout << "7. Cadastrar tripulante no Voo" << "\n";
     cout << "0. Sair" << "\n";
 }
 int main()
-{   
-    setlocale(LC_ALL, "pt_BR.UTF-8");
+{
+
     vector<Passageiro *> passageiros;
     vector<Tripulante *> tripulantes;
+    vector<Voo *> voos;
     int opcao;
     do
     {
@@ -213,11 +418,20 @@ int main()
         case 4:
             ver_tripulantes(tripulantes);
             break;
+        case 5:
+            cadastrar_Voo(voos);
+            break;
+        case 6:
+            ver_Voos(voos);
+            break;
+        case 7:
+            agregar_tripulante(tripulantes, voos);
+            break;
         default:
-            cout << "Opção inválida!\n";
+            cout << "Opcao invalida!\n";
         }
     } while (opcao != 0);
-    // Liberar memória alocada
+
     for (auto &p : passageiros)
         delete p;
     for (auto &t : tripulantes)
