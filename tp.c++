@@ -144,7 +144,7 @@ public:
         this->tripulacao = tripulacao;
         this->assentos = assentos;
     }
-     int getCodigo_voo() const
+    int getCodigo_voo() const
     {
         return codigo_voo;
     }
@@ -513,6 +513,30 @@ void ver_Reservas(const vector<Reserva *> &reservas)
         cout << "--------------------------------\n";
     }
 }
+void ver_Voo_passageiro(vector<Reserva *> &reservas)
+{
+    int codigo_passageiro;
+    cout << "Qual o codigo do passageiro: " << "\n";
+    cin >> codigo_passageiro;
+
+    int i = 0;
+    for (auto &reserva : reservas)
+    {
+        if (reserva->getPassageiro()->getCodigo() == codigo_passageiro)
+        {
+            cout << "Codigo do Voo: " << reserva->getVoo()->getCodigo_voo() << "\n";
+            cout << "Codigo do Assento: " << reserva->getAssento()->getCodigo() << "\n";
+            cout << "------------------------------" << "\n";
+
+            i++;
+        }
+    }
+    if (i == 0)
+    {
+        cout << "--------------------------" << "\n";
+        cout << "Passageiro inexistente ou sem reservas\n";
+    }
+}
 // Menu principal
 void menu()
 {
@@ -528,6 +552,7 @@ void menu()
     cout << "7. Cadastrar tripulante no Voo" << "\n";
     cout << "8. Reservar" << "\n";
     cout << "9. Ver reserva" << "\n";
+    cout << "10. Ver passageiros no voo" << "\n";
     cout << "0. Sair" << "\n";
 }
 int main()
@@ -573,6 +598,9 @@ int main()
             break;
         case 9:
             ver_Reservas(reservas);
+            break;
+        case 10: 
+            ver_Voo_passageiro(reservas);
             break;
         default:
             cout << "Opcao invalida!\n";
