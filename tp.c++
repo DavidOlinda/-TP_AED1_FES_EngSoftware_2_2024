@@ -144,25 +144,18 @@ public:
         this->tripulacao = tripulacao;
         this->assentos = assentos;
     }
-    int getCodigo_voo() const
-    {
-        return codigo_voo;
-    }
 
-    // Método atualizado para retornar uma referência ao vetor de assentos
-    vector<Assento> &getAssentos()
-    {
-        return assentos;
-    }
-
-    vector<Tripulante *> &getTripulantes()
-    {
-        return tripulacao;
-    }
+    int getCodigo_voo() const {return codigo_voo;}
+    double getTarifa() const {return tarifa;}
+    string getStatus() const {return status;}
+    vector<Assento> &getAssentos() {return assentos;}
+    vector<Tripulante *> &getTripulantes() {return tripulacao;}
+    void ativarAviao(){this->status = "ativo";}
+    void adicionarTripulante(Tripulante *tripulante){tripulacao.push_back(tripulante);}
 
     void exibirDados() const
     {
-        cout << "****** Código do Voo: " << codigo_voo << "\n";
+        cout << "#-#-#-#-# Código do Voo: " << codigo_voo << "#-#-#-#-#\n";
         cout << "Data: " << data << "\n";
         cout << "Hora: " << hora << "\n"; // Atualizado para string
         cout << "Origem: " << origem << "\n";
@@ -175,39 +168,36 @@ public:
             cout << tripulante->getCargo() << " com código " << tripulante->getCodigo() << " e nome: " << tripulante->getNome() << "\n";
         }
     }
-
-    void ativarAviao()
-    {
-        this->status = "ativo";
-    }
-
-    void adicionarTripulante(Tripulante *tripulante)
-    {
-        tripulacao.push_back(tripulante);
-    }
 };
+
 
 class Reserva
 {
 private:
+    int codigo;
+    string status = "aberta";
     Voo *voo;
     Assento *assento;
     Passageiro *passageiro;
 
 public:
-    Reserva(Voo *voo, Assento *assento, Passageiro *passageiro)
+    Reserva(Voo *voo, Assento *assento, Passageiro *passageiro, int codigo)
     {
         this->voo = voo;
         this->assento = assento;
         this->passageiro = passageiro;
+        this->codigo = codigo;
     }
 
     Voo *getVoo() const { return this->voo; }
-
+    int getCodigo() const { return this->codigo; }
+    string getStatus() const { return this->status; }
+    void fechar() { this->status = "fechada"; }
     Assento *getAssento() const { return this->assento; }
 
     Passageiro *getPassageiro() const { return this->passageiro; }
 };
+
 // Função para cadastrar um passageiro
 // Função para cadastrar um passageiro
 void cadastrar_passageiro(vector<Passageiro *> &passageiros)
@@ -420,8 +410,9 @@ void agregar_tripulante(vector<Tripulante *> &tripulantes, vector<Voo *> &voos)
         voo_selecionado->ativarAviao();
     }
 }
-void criarReserva(vector<Passageiro *> &passageiros, vector<Voo *> &voos, vector<Reserva *> &reservas)
-{
+void criarReserva(vector<Passageiro *> &passageiros, vector<Voo *> &voos, vector<Reserva *> &reservas, int codigo)
+{   
+    
     Passageiro *passageiro_atual = nullptr;
     Voo *voo_selecionado = nullptr;
     int codigo_passageiro, codigo_voo;
@@ -478,6 +469,7 @@ void criarReserva(vector<Passageiro *> &passageiros, vector<Voo *> &voos, vector
         }
         i++;
     }
+
     cout << "\n";
     cin >> opcao_assento;
 
@@ -491,10 +483,35 @@ void criarReserva(vector<Passageiro *> &passageiros, vector<Voo *> &voos, vector
     }
 
     voo_selecionado->getAssentos().at(opcao_assento).setStatusBusy();
-
-    Reserva *reserva = new Reserva(voo_selecionado, &voo_selecionado->getAssentos().at(opcao_assento), passageiro_atual);
+    
+    Reserva *reserva = new Reserva(voo_selecionado, &voo_selecionado->getAssentos().at(opcao_assento), passageiro_atual,codigo);
     reservas.push_back(reserva);
     cout << "Assento reservado com sucesso!" << "\n";
+
+    bool piloto;
+    bool copiloto;
+    for (auto tripulante : voo_selecionado->getTripulantes())
+    {
+        if (tripulante->getCargo() == "piloto")
+        {
+            piloto = true;
+        }
+        else if (tripulante->getCargo() == "copiloto")
+        {
+            copiloto = true;
+        }
+    }
+    if (piloto == true and copiloto == true)
+    {
+        voo_selecionado->ativarAviao();
+        return;
+    }
+    if (voo_selecionado->getStatus() == "inativo")
+    {
+        cout << "**********************************************" << "\n";
+        cout << "Aviso: Esse voo está inativo!" << "\n";
+        return;
+    }
 }
 void ver_Reservas(const vector<Reserva *> &reservas)
 {
@@ -537,27 +554,138 @@ void ver_Voo_passageiro(vector<Reserva *> &reservas)
         cout << "Passageiro inexistente ou sem reservas\n";
     }
 }
+bool comparadorCodigo(int voo_codigo, string prefix)
+{
+    string codigo_str = to_string(voo_codigo);
+    return codigo_str.substr(0, prefix.size()) == prefix;
+}
+
+bool comparadorNome(string nome, string prefix)
+{
+    return nome.substr(0, prefix.size()) == prefix;
+}
+void pesquisar_Voo(vector<Voo *> &voos)
+{
+    string codigo_aviao;
+    cout << "Qual codigo do aviao: " << "\n";
+    cin >> codigo_aviao;
+
+    for (auto &voo : voos)
+    {
+        if (comparadorCodigo(voo->getCodigo_voo(), codigo_aviao))
+        {
+            voo->exibirDados();
+        }
+    }
+}
+void pesquisarPessoas(vector<Passageiro *> &passageiros)
+{
+    string codigonome_passageiro;
+    cout << "Qual é o nome ou codigo do passageiro" << "\n";
+    cin >> codigonome_passageiro;
+
+    for (auto &passageiro : passageiros)
+    {
+        if (comparadorCodigo(passageiro->getCodigo(), codigonome_passageiro) || comparadorNome(passageiro->getNome(), codigonome_passageiro))
+        {
+            passageiro->exibirDados();
+        }
+    }
+}
+void pesquisarTripulante(vector<Tripulante *> &tripulantes)
+{
+    string codigo_tripulante;
+    cout << "Qual é o nome ou codigo do tripulante" << "\n";
+    cin >> codigo_tripulante;
+
+    for (auto &tripulante : tripulantes)
+    {
+        if (comparadorCodigo(tripulante->getCodigo(), codigo_tripulante) || comparadorNome(tripulante->getNome(), codigo_tripulante))
+        {
+            tripulante->exibirDados();
+        }
+    }
+}
+void reservaBaixa(vector<Reserva *> &reservas)
+{
+    int cod_reserva;
+    cout << "Qual o código da reserva: " << "\n";
+    cin >> cod_reserva;
+
+    for (auto &reserva : reservas)
+    {
+        if (reserva->getCodigo() == cod_reserva)
+        {
+            if (reserva->getStatus() == "fechado")
+            {
+                cout << "**********************************************" << "\n";
+                cout << "Aviso: Essa reserva ja foi fechada\n";
+                return;
+            }
+
+            if (reserva->getPassageiro()->getFidelidade() == "sim")
+            {
+                reserva->getPassageiro()->setPontosFidelidade(reserva->getPassageiro()->getPontosFidelidade() + 10);
+
+                cout << "**********************************************" << "\n";
+                cout << "Aviso: 10 pontos para fidelidade!\n";
+            }
+
+            reserva->fechar();
+            reserva->getAssento()->setStatusFree();
+            cout << "Aviso: Valor final R$ " << reserva->getVoo()->getTarifa() << "\n";
+            cout << "Aviso: Reserva Fechada com sucesso!\n";
+            break;
+        }
+    }
+}
+
 // Menu principal
 void menu()
 {
-    cout << "****** Bem vindo a Companhia Aerea Voo Seguro ****** " << "\n";
-    cout << "-------------------------------------------" << "\n";
+    cout << "**********************************************" << "\n";
+    cout << "*                                            *" << "\n";
+    cout << "*    Bem-vindo à Companhia Aérea Voo Seguro  *" << "\n";
+    cout << "*                                            *" << "\n";
+    cout << "**********************************************" << "\n";
+    cout << "-----------------------------------------------" << "\n";
     cout << "Escolha uma opcao: " << "\n";
-    cout << "1. Cadastrar passageiro" << "\n";
-    cout << "2. Ver passageiros" << "\n";
-    cout << "3. Cadastrar tripulante" << "\n";
-    cout << "4. Ver tripulantes" << "\n";
-    cout << "5. Cadastrar voo" << "\n";
-    cout << "6. Ver voos" << "\n";
-    cout << "7. Cadastrar tripulante no Voo" << "\n";
-    cout << "8. Reservar" << "\n";
-    cout << "9. Ver reserva" << "\n";
-    cout << "10. Ver passageiros no voo" << "\n";
-    cout << "0. Sair" << "\n";
+    cout << "\n";
+    cout << "Gestão:\n";
+    cout << " 1. Cadastrar voo" << "\n";
+    cout << " 2. Cadastrar passageiro" << "\n";
+    cout << " 3. Cadastrar tripulante" << "\n";
+    cout << " 4. Cadastrar tripulante em Voo" << "\n";
+    cout << " 5. Cadastrar Reserva" << "\n";
+    
+
+    cout << "Visualização:\n";
+    cout << " 6. Ver voos" << "\n";
+    cout << " 7. Ver passageiros" << "\n";
+    cout << " 8. Ver tripulantes" << "\n";
+    cout << " 9. Ver reserva" << "\n";
+    cout << " 10. Ver Voos de passageiro" << "\n";
+
+    cout << "Pesquisa:\n";
+    cout << " 11. Pesquisar Voos" << "\n";
+    cout << " 12. Pesquisar Passageiros" << "\n";
+    cout << " 13. Pesquisar Tripante" << "\n";
+
+    cout << "Pagamento:\n";
+    cout << " 14. Dar baixa em reserva" << "\n";
+    
+    cout << " 0. Sair" << "\n";
+    cout << "\n";
+    cout << "-----------------------------------------------" << "\n";
 }
+
+
+
+
+
 int main()
 {
-    setlocale(LC_ALL, "");
+    setlocale(LC_ALL, "pt_BR.UTF-8");
     vector<Reserva *> reservas;
     vector<Passageiro *> passageiros;
     vector<Tripulante *> tripulantes;
@@ -567,44 +695,72 @@ int main()
     {
         menu();
         cin >> opcao;
-        switch (opcao)
-        {
+        switch (opcao) {
         case 0:
-            cout << "Saindo...\n";
+            system("cls");
+            cout << "Obrigado por usar!\n";
             break;
         case 1:
-            cadastrar_passageiro(passageiros);
+            system("cls");
+            cadastrar_Voo(voos);
             break;
         case 2:
-            ver_passageiros(passageiros);
+            system("cls");
+            cadastrar_passageiro(passageiros);
             break;
         case 3:
+            system("cls");
             cadastrar_tripulante(tripulantes);
             break;
         case 4:
-            ver_tripulantes(tripulantes);
+            system("cls");
+            agregar_tripulante(tripulantes, voos);
             break;
         case 5:
-            cadastrar_Voo(voos);
+            system("cls");
+            criarReserva(passageiros, voos, reservas, reservas.size());
             break;
         case 6:
+            system("cls");
             ver_Voos(voos);
             break;
         case 7:
-            agregar_tripulante(tripulantes, voos);
+            system("cls");
+            ver_passageiros(passageiros);
             break;
         case 8:
-            criarReserva(passageiros, voos, reservas);
+            system("cls");
+            ver_tripulantes(tripulantes);
             break;
         case 9:
+            system("cls");
             ver_Reservas(reservas);
             break;
-        case 10: 
+        case 10:
+            system("cls");
             ver_Voo_passageiro(reservas);
             break;
+        case 11:
+            system("cls");
+            pesquisar_Voo(voos);
+            break;
+        case 12:
+            system("cls");
+            pesquisarPessoas(passageiros);
+            break;
+        case 13:
+            system("cls");
+            pesquisarTripulante(tripulantes);
+            break;
+        case 14:
+            system("cls");
+            reservaBaixa(reservas);
+            break;
         default:
+            system("cls");
+            cout << "**********************************************" << "\n";
             cout << "Opcao invalida!\n";
-        }
+    }
     } while (opcao != 0);
 
     for (auto &p : passageiros)
