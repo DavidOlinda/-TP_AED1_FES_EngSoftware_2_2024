@@ -946,14 +946,13 @@ void carregarDados(vector<Passageiro *> &passageiros, vector<Tripulante *> &trip
             }
         }
 
-        // Certifique-se de que todos os ponteiros foram encontrados antes de criar a reserva
         if (voo && assento && passageiro)
         {
             reservas.push_back(new Reserva(voo, assento, passageiro, codigo));
         }
         else
         {
-            cerr << "Erro ao carregar reserva: dados inconsistentes." << endl;
+            cerr << "Erro ao carregar reserva: dados inconsistentes para a reserva com código " << codigo << "." << endl;
         }
     }
 
