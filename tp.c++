@@ -146,7 +146,10 @@ public:
         this->tripulacao = tripulacao;
         this->assentos = assentos;
     }
-
+    string getData() const { return data; }
+    string getHora() const { return hora; }
+    string getOrigem() const { return origem; }
+    string getDestino() const { return destino; }
     int getCodigo_voo() const { return codigo_voo; }
     double getTarifa() const { return tarifa; }
     string getStatus() const { return status; }
@@ -682,12 +685,13 @@ void menu()
     cout << "-----------------------------------------------" << "\n";
 }
 
-
 // Funções para salvar e carregar dados
 void salvarDados(const vector<Passageiro *> &passageiros, const vector<Tripulante *> &tripulantes,
-                 const vector<Voo *> &voos, const vector<Reserva *> &reservas) {
+                 const vector<Voo *> &voos, const vector<Reserva *> &reservas)
+{
     ofstream arquivo("dados.bin", ios::binary | ios::out);
-    if (!arquivo) {
+    if (!arquivo)
+    {
         cerr << "Erro ao abrir arquivo para salvar dados." << endl;
         return;
     }
@@ -695,7 +699,8 @@ void salvarDados(const vector<Passageiro *> &passageiros, const vector<Tripulant
     // Salvar passageiros
     size_t tamanho = passageiros.size();
     arquivo.write((char *)&tamanho, sizeof(tamanho));
-    for (auto passageiro : passageiros) {
+    for (auto passageiro : passageiros)
+    {
         int codigo = passageiro->getCodigo();
         arquivo.write((char *)&codigo, sizeof(codigo));
 
@@ -722,7 +727,8 @@ void salvarDados(const vector<Passageiro *> &passageiros, const vector<Tripulant
     // Salvar tripulantes
     tamanho = tripulantes.size();
     arquivo.write((char *)&tamanho, sizeof(tamanho));
-    for (auto tripulante : tripulantes) {
+    for (auto tripulante : tripulantes)
+    {
         int codigo = tripulante->getCodigo();
         arquivo.write((char *)&codigo, sizeof(codigo));
 
@@ -742,7 +748,8 @@ void salvarDados(const vector<Passageiro *> &passageiros, const vector<Tripulant
     // Salvar voos
     tamanho = voos.size();
     arquivo.write((char *)&tamanho, sizeof(tamanho));
-    for (auto voo : voos) {
+    for (auto voo : voos)
+    {
         int codigo = voo->getCodigo_voo();
         arquivo.write((char *)&codigo, sizeof(codigo));
 
@@ -773,7 +780,8 @@ void salvarDados(const vector<Passageiro *> &passageiros, const vector<Tripulant
     // Salvar reservas
     tamanho = reservas.size();
     arquivo.write((char *)&tamanho, sizeof(tamanho));
-    for (auto reserva : reservas) {
+    for (auto reserva : reservas)
+    {
         int codigo = reserva->getCodigo();
         arquivo.write((char *)&codigo, sizeof(codigo));
 
@@ -791,9 +799,11 @@ void salvarDados(const vector<Passageiro *> &passageiros, const vector<Tripulant
 }
 
 void carregarDados(vector<Passageiro *> &passageiros, vector<Tripulante *> &tripulantes,
-                   vector<Voo *> &voos, vector<Reserva *> &reservas) {
+                   vector<Voo *> &voos, vector<Reserva *> &reservas)
+{
     ifstream arquivo("dados.bin", ios::binary | ios::in);
-    if (!arquivo) {
+    if (!arquivo)
+    {
         cerr << "Nenhum arquivo de dados encontrado. Iniciando com dados vazios." << endl;
         return;
     }
@@ -801,7 +811,8 @@ void carregarDados(vector<Passageiro *> &passageiros, vector<Tripulante *> &trip
     // Carregar passageiros
     size_t tamanho;
     arquivo.read((char *)&tamanho, sizeof(tamanho));
-    for (size_t i = 0; i < tamanho; ++i) {
+    for (size_t i = 0; i < tamanho; ++i)
+    {
         int codigo;
         arquivo.read((char *)&codigo, sizeof(codigo));
 
@@ -832,7 +843,8 @@ void carregarDados(vector<Passageiro *> &passageiros, vector<Tripulante *> &trip
 
     // Carregar tripulantes
     arquivo.read((char *)&tamanho, sizeof(tamanho));
-    for (size_t i = 0; i < tamanho; ++i) {
+    for (size_t i = 0; i < tamanho; ++i)
+    {
         int codigo;
         arquivo.read((char *)&codigo, sizeof(codigo));
 
@@ -856,7 +868,8 @@ void carregarDados(vector<Passageiro *> &passageiros, vector<Tripulante *> &trip
 
     // Carregar voos
     arquivo.read((char *)&tamanho, sizeof(tamanho));
-    for (size_t i = 0; i < tamanho; ++i) {
+    for (size_t i = 0; i < tamanho; ++i)
+    {
         int codigo;
         arquivo.read((char *)&codigo, sizeof(codigo));
 
@@ -891,7 +904,8 @@ void carregarDados(vector<Passageiro *> &passageiros, vector<Tripulante *> &trip
 
     // Carregar reservas
     arquivo.read((char *)&tamanho, sizeof(tamanho));
-    for (size_t i = 0; i < tamanho; ++i) {
+    for (size_t i = 0; i < tamanho; ++i)
+    {
         int codigo, codigoVoo, codigoAssento, codigoPassageiro;
 
         arquivo.read((char *)&codigo, sizeof(codigo));
@@ -901,32 +915,50 @@ void carregarDados(vector<Passageiro *> &passageiros, vector<Tripulante *> &trip
 
         Voo *voo = nullptr;
         for (auto v : voos)
-            if (v->getCodigo_voo() == codigoVoo) {
+        {
+            if (v->getCodigo_voo() == codigoVoo)
+            {
                 voo = v;
                 break;
             }
+        }
 
         Assento *assento = nullptr;
-        for (auto &a : voo->getAssentos())
-            if (a.getCodigo() == codigoAssento) {
-                assento = &a;
-                break;
+        if (voo)
+        {
+            for (auto &a : voo->getAssentos())
+            {
+                if (a.getCodigo() == codigoAssento)
+                {
+                    assento = &a;
+                    break;
+                }
             }
+        }
 
         Passageiro *passageiro = nullptr;
         for (auto p : passageiros)
-            if (p->getCodigo() == codigoPassageiro) {
+        {
+            if (p->getCodigo() == codigoPassageiro)
+            {
                 passageiro = p;
                 break;
             }
+        }
 
+        // Certifique-se de que todos os ponteiros foram encontrados antes de criar a reserva
         if (voo && assento && passageiro)
+        {
             reservas.push_back(new Reserva(voo, assento, passageiro, codigo));
+        }
+        else
+        {
+            cerr << "Erro ao carregar reserva: dados inconsistentes." << endl;
+        }
     }
 
     arquivo.close();
 }
-
 
 int main()
 {
