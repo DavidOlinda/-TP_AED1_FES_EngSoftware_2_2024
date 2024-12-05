@@ -7,54 +7,52 @@ using namespace std;
 
 class Pessoa
 {
+private:
+    int codigo;
+    string nome;
+    string telefone;
+
 public:
-    // Construtor da classe Pessoa
-    Pessoa(int codigo, string nome, string telefone) // Alterado de int para string
+    Pessoa(int codigo, string nome, string telefone)
     {
         this->codigo = codigo;
         this->nome = nome;
         this->telefone = telefone;
     }
-    // Métodos get
+
     int getCodigo() const { return codigo; }
     string getNome() const { return nome; }
-    string getTelefone() const { return telefone; } // Alterado de int para string
-    // Métodos set
+    string getTelefone() const { return telefone; }
+
     void setCodigo(int codigo) { this->codigo = codigo; }
     void setNome(string nome) { this->nome = nome; }
-    void setTelefone(string telefone) { this->telefone = telefone; } // Alterado de int para string
-
-private:
-    int codigo;
-    string nome;
-    string telefone; // Alterado de int para string
+    void setTelefone(string telefone) { this->telefone = telefone; }
 };
 class Passageiro : public Pessoa
 {
 public:
-    // Construtor da classe Passageiro
     Passageiro(int codigo, string nome, string telefone, string endereco, string fidelidade, int pontos_fidelidade)
-        : Pessoa(codigo, nome, telefone) // Alterado de int para string
+        : Pessoa(codigo, nome, telefone)
     {
         this->endereco = endereco;
         this->fidelidade = fidelidade;
         this->pontos_fidelidade = pontos_fidelidade;
     }
-    // Métodos get
+
     string getEndereco() const { return endereco; }
     string getFidelidade() const { return fidelidade; }
     int getPontosFidelidade() const { return pontos_fidelidade; }
-    // Métodos set
+
     void setEndereco(string endereco) { this->endereco = endereco; }
     void setFidelidade(string fidelidade) { this->fidelidade = fidelidade; }
     void setPontosFidelidade(int pontos_fidelidade) { this->pontos_fidelidade = pontos_fidelidade; }
-    // Método para exibir os dados do passageiro
+
     void exibirDados()
     {
         cout << "#### Codigo passageiro: " << getCodigo() << "\n";
         cout << "Nome passageiro: " << getNome() << "\n";
         cout << "Endereco do passageiro: " << endereco << "\n";
-        cout << "Telefone passageiro: " << getTelefone() << "\n"; // Alterado de int para string
+        cout << "Telefone passageiro: " << getTelefone() << "\n";
         cout << "Tem fidelidade? " << fidelidade << "\n";
         cout << "Pontos fidelidade: " << pontos_fidelidade << "\n";
     }
@@ -67,19 +65,18 @@ private:
 class Tripulante : public Pessoa
 {
 public:
-    // Construtor da classe Tripulante
     Tripulante(int codigo, string nome, string telefone, string cargo)
-        : Pessoa(codigo, nome, telefone), cargo(cargo) {} // Alterado de int para string
-    // Métodos get
+        : Pessoa(codigo, nome, telefone), cargo(cargo) {}
+
     string getCargo() const { return cargo; }
-    // Métodos set
+
     void setCargo(string cargo) { this->cargo = cargo; }
-    // Método para exibir os dados do tripulante
+
     void exibirDados()
     {
-        cout << "#### Código tripulante: " << getCodigo() << "\n";
+        cout << "#### Codigo tripulante: " << getCodigo() << "\n";
         cout << "Nome: " << getNome() << "\n";
-        cout << "Telefone: " << getTelefone() << "\n"; // Alterado de int para string
+        cout << "Telefone: " << getTelefone() << "\n";
         cout << "Cargo: " << cargo << "\n";
     }
 
@@ -125,7 +122,7 @@ class Voo
 private:
     int codigo_voo;
     string data;
-    string hora; // Alterado de int para string
+    string hora;
     string origem;
     string destino;
     string status; // "ativo" ou "inativo"
@@ -160,7 +157,7 @@ public:
 
     void exibirDados() const
     {
-        cout << "#-#-#-#-# Código do Voo: " << codigo_voo << "#-#-#-#-#\n";
+        cout << "#-#-#-#-# Codigo do Voo: " << codigo_voo << "#-#-#-#-#\n";
         cout << "Data: " << data << "\n";
         cout << "Hora: " << hora << "\n"; // Atualizado para string
         cout << "Origem: " << origem << "\n";
@@ -170,7 +167,7 @@ public:
         cout << "Tripulantes nesse voo: " << "\n";
         for (auto tripulante : tripulacao)
         {
-            cout << tripulante->getCargo() << " com código " << tripulante->getCodigo() << " e nome: " << tripulante->getNome() << "\n";
+            cout << tripulante->getCargo() << " com codigo " << tripulante->getCodigo() << " e nome: " << tripulante->getNome() << "\n";
         }
     }
 };
@@ -202,15 +199,13 @@ public:
     Passageiro *getPassageiro() const { return this->passageiro; }
 };
 
-// Função para cadastrar um passageiro
-// Função para cadastrar um passageiro
 void cadastrar_passageiro(vector<Passageiro *> &passageiros)
 {
     int codigo;
     string nome, endereco, fidelidade, telefone; // Alterado de int para string
     cout << "Digite o codigo do passageiro: " << "\n";
     cin >> codigo;
-    // Verificar se o código já existe
+
     for (auto pessoa : passageiros)
     {
         if (pessoa->getCodigo() == codigo)
@@ -226,7 +221,7 @@ void cadastrar_passageiro(vector<Passageiro *> &passageiros)
     cout << "Digite o endereco do passageiro: " << "\n";
     getline(cin, endereco);
     cout << "Digite o telefone do passageiro: " << "\n";
-    getline(cin, telefone); // Alterado para getline em vez de cin
+    getline(cin, telefone);
     cout << "Tem fidelidade? (Sim ou Nao): " << "\n";
     getline(cin, fidelidade);
     // Criar um novo passageiro e adicionar ao vetor
@@ -234,7 +229,7 @@ void cadastrar_passageiro(vector<Passageiro *> &passageiros)
     passageiros.push_back(passageiro);
     cout << "Passageiro cadastrado com sucesso!\n";
 }
-// Função para ver os passageiros
+
 void ver_passageiros(const vector<Passageiro *> &passageiros)
 {
     if (passageiros.empty())
@@ -249,15 +244,14 @@ void ver_passageiros(const vector<Passageiro *> &passageiros)
         cout << "--------------------------------\n";
     }
 }
-// Função para cadastrar um tripulante
-// Função para cadastrar um tripulante
+
 void cadastrar_tripulante(vector<Tripulante *> &tripulantes)
 {
     int codigo;
-    string nome, cargo, telefone; // Alterado de int para string
+    string nome, cargo, telefone;
     cout << "Digite o codigo do tripulante: " << "\n";
     cin >> codigo;
-    // Verificar se o código já existe
+
     for (auto pessoa : tripulantes)
     {
         if (pessoa->getCodigo() == codigo)
@@ -271,15 +265,16 @@ void cadastrar_tripulante(vector<Tripulante *> &tripulantes)
     cin.ignore();
     getline(cin, nome);
     cout << "Digite o telefone do tripulante: " << "\n";
-    getline(cin, telefone); // Alterado para getline em vez de cin
+    getline(cin, telefone);
     cout << "Digite o cargo do tripulante: " << "\n";
     getline(cin, cargo);
+
     // Criar um novo tripulante e adicioná-lo ao vetor
     Tripulante *tripulante = new Tripulante(codigo, nome, telefone, cargo);
     tripulantes.push_back(tripulante);
     cout << "Tripulante cadastrado com sucesso!\n";
 }
-// Função para ver os tripulantes
+
 void ver_tripulantes(const vector<Tripulante *> &tripulantes)
 {
     if (tripulantes.empty())
@@ -294,6 +289,7 @@ void ver_tripulantes(const vector<Tripulante *> &tripulantes)
         cout << "--------------------------------\n";
     }
 }
+
 void cadastrar_Voo(vector<Voo *> &voos)
 {
     int num_assentos, codigo_voo;
@@ -421,7 +417,7 @@ void criarReserva(vector<Passageiro *> &passageiros, vector<Voo *> &voos, vector
     Voo *voo_selecionado = nullptr;
     int codigo_passageiro, codigo_voo;
 
-    cout << "Qual o código do avião: " << "\n";
+    cout << "Qual o codigo do aviao: " << "\n";
     cin >> codigo_voo;
 
     for (auto voo : voos)
@@ -435,11 +431,11 @@ void criarReserva(vector<Passageiro *> &passageiros, vector<Voo *> &voos, vector
 
     if (voo_selecionado == nullptr)
     {
-        cout << "Esse voo não existe!" << "\n";
+        cout << "Esse voo nao existe!" << "\n";
         return;
     }
 
-    cout << "Qual o código do passageiro: " << "\n";
+    cout << "Qual o codigo do passageiro: " << "\n";
     cin >> codigo_passageiro;
 
     for (auto passageiro : passageiros)
@@ -453,11 +449,11 @@ void criarReserva(vector<Passageiro *> &passageiros, vector<Voo *> &voos, vector
 
     if (passageiro_atual == nullptr)
     {
-        cout << "Esse passageiro não existe!" << "\n";
+        cout << "Esse passageiro nao existe!" << "\n";
         return;
     }
 
-    cout << "Em qual assento você deseja sentar? " << "\n";
+    cout << "Em qual assento voce deseja sentar? " << "\n";
 
     int opcao_assento;
     int i = 1;
@@ -477,12 +473,12 @@ void criarReserva(vector<Passageiro *> &passageiros, vector<Voo *> &voos, vector
     cout << "\n";
     cin >> opcao_assento;
 
-    // Ajustando índice para zero-based
+    // Para opcao assento comecar em 0
     opcao_assento--;
 
     if (voo_selecionado->getAssentos().at(opcao_assento).getStatus() == "ocupado")
     {
-        cout << "Esse assento está ocupado!" << "\n";
+        cout << "Esse assento esta ocupado!" << "\n";
         return;
     }
 
@@ -513,7 +509,7 @@ void criarReserva(vector<Passageiro *> &passageiros, vector<Voo *> &voos, vector
     if (voo_selecionado->getStatus() == "inativo")
     {
         cout << "**********************************************" << "\n";
-        cout << "Aviso: Esse voo está inativo!" << "\n";
+        cout << "Aviso: Esse voo esta inativo!" << "\n";
         return;
     }
 }
@@ -616,14 +612,14 @@ void pesquisarTripulante(vector<Tripulante *> &tripulantes)
 void reservaBaixa(vector<Reserva *> &reservas)
 {
     int cod_reserva;
-    cout << "Qual o código da reserva: " << "\n";
+    cout << "Qual o codigo da reserva: " << "\n";
     cin >> cod_reserva;
 
     for (auto &reserva : reservas)
     {
         if (reserva->getCodigo() == cod_reserva)
         {
-            if (reserva->getStatus() == "fechado")
+            if (reserva->getStatus() == "fechada")
             {
                 cout << "**********************************************" << "\n";
                 cout << "Aviso: Essa reserva ja foi fechada\n";
@@ -647,25 +643,24 @@ void reservaBaixa(vector<Reserva *> &reservas)
     }
 }
 
-// Menu principal
 void menu()
 {
     cout << "**********************************************" << "\n";
     cout << "*                                            *" << "\n";
-    cout << "*    Bem-vindo à Companhia Aérea Voo Seguro  *" << "\n";
+    cout << "*    Bem-vindo a Companhia Aerea Voo Seguro  *" << "\n";
     cout << "*                                            *" << "\n";
     cout << "**********************************************" << "\n";
     cout << "-----------------------------------------------" << "\n";
     cout << "Escolha uma opcao: " << "\n";
     cout << "\n";
-    cout << "Gestão:\n";
+    cout << "Gestao:\n";
     cout << " 1. Cadastrar voo" << "\n";
     cout << " 2. Cadastrar passageiro" << "\n";
     cout << " 3. Cadastrar tripulante" << "\n";
     cout << " 4. Cadastrar tripulante em Voo" << "\n";
     cout << " 5. Cadastrar Reserva" << "\n";
 
-    cout << "Visualização:\n";
+    cout << "Visualizacao:\n";
     cout << " 6. Ver voos" << "\n";
     cout << " 7. Ver passageiros" << "\n";
     cout << " 8. Ver tripulantes" << "\n";
@@ -775,8 +770,19 @@ void salvarDados(const vector<Passageiro *> &passageiros, const vector<Tripulant
 
         double tarifa = voo->getTarifa();
         arquivo.write((char *)&tarifa, sizeof(tarifa));
-    }
 
+        int assentos = voo->getAssentos().size();
+        arquivo.write((char *)&assentos, sizeof(assentos));
+
+        int num_vet_debaixo = voo->getTripulantes().size();
+        arquivo.write((char *)&num_vet_debaixo, sizeof(num_vet_debaixo));
+
+        for (size_t i = 0; i < num_vet_debaixo; i++)
+        {
+            int codigo_trip = voo->getTripulantes()[i]->getCodigo();
+            arquivo.write((char *)&codigo_trip, sizeof(codigo_trip));
+        }
+    }
     // Salvar reservas
     tamanho = reservas.size();
     arquivo.write((char *)&tamanho, sizeof(tamanho));
@@ -793,6 +799,13 @@ void salvarDados(const vector<Passageiro *> &passageiros, const vector<Tripulant
 
         int codigoPassageiro = reserva->getPassageiro()->getCodigo();
         arquivo.write((char *)&codigoPassageiro, sizeof(codigoPassageiro));
+        int statusReserva = 0;
+        if (reserva->getStatus() == "fechada")
+        {
+            statusReserva = 1;
+        }
+
+        arquivo.write((char *)&statusReserva, sizeof(statusReserva));
     }
 
     arquivo.close();
@@ -870,7 +883,7 @@ void carregarDados(vector<Passageiro *> &passageiros, vector<Tripulante *> &trip
     arquivo.read((char *)&tamanho, sizeof(tamanho));
     for (size_t i = 0; i < tamanho; ++i)
     {
-        int codigo;
+        int codigo, num_assentos;
         arquivo.read((char *)&codigo, sizeof(codigo));
 
         size_t len;
@@ -899,7 +912,32 @@ void carregarDados(vector<Passageiro *> &passageiros, vector<Tripulante *> &trip
 
         arquivo.read((char *)&tarifa, sizeof(tarifa));
 
-        voos.push_back(new Voo(codigo, data, hora, origem, destino, status, tarifa, {}, {}));
+        arquivo.read((char *)&num_assentos, sizeof(num_assentos));
+
+        vector<Assento> assentos;
+        for (int i = 0; i < num_assentos; i++)
+        {
+            Assento assento(i + 1, "desocupado");
+            assentos.push_back(assento);
+        }
+
+        voos.push_back(new Voo(codigo, data, hora, origem, destino, status, tarifa, {}, assentos));
+
+        int num_vet_debaixo;
+        arquivo.read((char *)&num_vet_debaixo, sizeof(num_vet_debaixo));
+
+        for (int i = 0; i < num_vet_debaixo; i++)
+        {
+            int codigo_trip;
+            arquivo.read((char *)&codigo_trip, sizeof(codigo_trip));
+            for (auto &trip : tripulantes)
+            {
+                if (trip->getCodigo() == codigo_trip)
+                {
+                    voos[voos.size() - 1]->getTripulantes().push_back(trip);
+                }
+            }
+        }
     }
 
     // Carregar reservas
@@ -907,11 +945,13 @@ void carregarDados(vector<Passageiro *> &passageiros, vector<Tripulante *> &trip
     for (size_t i = 0; i < tamanho; ++i)
     {
         int codigo, codigoVoo, codigoAssento, codigoPassageiro;
+        int statusReserva;
 
         arquivo.read((char *)&codigo, sizeof(codigo));
         arquivo.read((char *)&codigoVoo, sizeof(codigoVoo));
         arquivo.read((char *)&codigoAssento, sizeof(codigoAssento));
         arquivo.read((char *)&codigoPassageiro, sizeof(codigoPassageiro));
+        arquivo.read((char *)&statusReserva, sizeof(statusReserva));
 
         Voo *voo = nullptr;
         for (auto v : voos)
@@ -949,10 +989,14 @@ void carregarDados(vector<Passageiro *> &passageiros, vector<Tripulante *> &trip
         if (voo && assento && passageiro)
         {
             reservas.push_back(new Reserva(voo, assento, passageiro, codigo));
+            if (statusReserva == 1)
+            {
+                reservas[reservas.size() - 1]->fechar();
+            }
         }
         else
         {
-            cerr << "Erro ao carregar reserva: dados inconsistentes para a reserva com código " << codigo << "." << endl;
+            cerr << "Erro ao carregar reserva: dados inconsistentes para a reserva com codigo " << codigo << "." << endl;
         }
     }
 
