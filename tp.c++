@@ -370,8 +370,9 @@ void agregar_tripulante(vector<Tripulante *> &tripulantes, vector<Voo *> &voos)
     }
 
     if (voo_selecionado == nullptr)
-    {
-        cout << "Esse voo nao existe!" << "\n";
+    {   
+        cout << "**********************************************" << "\n";
+        cout << "Aviso: Esse voo nao existe!" << "\n";
         return;
     }
 
@@ -390,7 +391,8 @@ void agregar_tripulante(vector<Tripulante *> &tripulantes, vector<Voo *> &voos)
 
     if (tripulante_atual == nullptr)
     {
-        cout << "Esse tripulante nao existe!" << "\n";
+        cout << "**********************************************" << "\n";
+        cout << "Aviso: Esse tripulante nao existe!" << "\n";
         return;
     }
 
@@ -398,17 +400,28 @@ void agregar_tripulante(vector<Tripulante *> &tripulantes, vector<Voo *> &voos)
     {
         if (tripulante->getCargo() == tripulante_atual->getCargo())
         {
-            cout << "Esse tripulante nao pode ser adicionado! Ja existe um membro com esse cargo." << "\n";
+            cout << "**********************************************" << "\n";
+            cout << "Aviso: Ja existe um membro com esse cargo." << "\n";
             return;
         }
     }
 
     voo_selecionado->adicionarTripulante(tripulante_atual);
 
-    if (voo_selecionado->getTripulantes().size() == 3)
+
+    bool piloto = false;
+    bool copiloto = false;
+    for (auto tripulante : voo_selecionado->getTripulantes())
     {
-        voo_selecionado->ativarAviao();
+        if (tripulante->getCargo() == "piloto")
+            piloto = true;
+        else if (tripulante->getCargo() == "copiloto")
+            copiloto = true;
     }
+
+    if (piloto == true and copiloto ==true)
+        voo_selecionado->ativarAviao();
+    return;
 }
 void criarReserva(vector<Passageiro *> &passageiros, vector<Voo *> &voos, vector<Reserva *> &reservas, int codigo)
 {
@@ -488,30 +501,7 @@ void criarReserva(vector<Passageiro *> &passageiros, vector<Voo *> &voos, vector
     reservas.push_back(reserva);
     cout << "Assento reservado com sucesso!" << "\n";
 
-    bool piloto;
-    bool copiloto;
-    for (auto tripulante : voo_selecionado->getTripulantes())
-    {
-        if (tripulante->getCargo() == "piloto")
-        {
-            piloto = true;
-        }
-        else if (tripulante->getCargo() == "copiloto")
-        {
-            copiloto = true;
-        }
-    }
-    if (piloto == true and copiloto == true)
-    {
-        voo_selecionado->ativarAviao();
-        return;
-    }
-    if (voo_selecionado->getStatus() == "inativo")
-    {
-        cout << "**********************************************" << "\n";
-        cout << "Aviso: Esse voo esta inativo!" << "\n";
-        return;
-    }
+    
 }
 void ver_Reservas(const vector<Reserva *> &reservas)
 {
@@ -584,7 +574,7 @@ void pesquisar_Voo(vector<Voo *> &voos)
 void pesquisarPessoas(vector<Passageiro *> &passageiros)
 {
     string codigonome_passageiro;
-    cout << "Qual é o nome ou codigo do passageiro" << "\n";
+    cout << "Qual eh o nome ou codigo do passageiro" << "\n";
     cin >> codigonome_passageiro;
 
     for (auto &passageiro : passageiros)
@@ -598,7 +588,7 @@ void pesquisarPessoas(vector<Passageiro *> &passageiros)
 void pesquisarTripulante(vector<Tripulante *> &tripulantes)
 {
     string codigo_tripulante;
-    cout << "Qual é o nome ou codigo do tripulante" << "\n";
+    cout << "Qual eh o nome ou codigo do tripulante" << "\n";
     cin >> codigo_tripulante;
 
     for (auto &tripulante : tripulantes)
