@@ -222,7 +222,7 @@ void cadastrar_passageiro(vector<Passageiro *> &passageiros)
     getline(cin, endereco);
     cout << "Digite o telefone do passageiro: " << "\n";
     getline(cin, telefone);
-    cout << "Tem fidelidade? (Sim ou Nao): " << "\n";
+    cout << "Tem fidelidade? (sim ou nao): " << "\n";
     getline(cin, fidelidade);
     // Criar um novo passageiro e adicionar ao vetor
     Passageiro *passageiro = new Passageiro(codigo, nome, telefone, endereco, fidelidade, 0);
